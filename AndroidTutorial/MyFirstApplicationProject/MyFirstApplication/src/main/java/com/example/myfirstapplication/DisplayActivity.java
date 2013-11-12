@@ -5,6 +5,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.TextView;
+
+import com.example.myfirstapplication.Database.DataTable;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class DisplayActivity extends ActionBarActivity {
 
@@ -75,6 +81,17 @@ public class DisplayActivity extends ActionBarActivity {
 
         //-- Set TextView jadi sebuah View di-Activity sekarang ini
         this.setContentView(textView);
+
+//        //-- GetMessage by ID
+//        DataTable dataTable = new DataTable(this);
+//        Log.d("ACTIVITY LOG", dataTable.getMessageComment(1));
+//
+//        //-- Get All Message
+//        List<String> allMessage = dataTable.getAllMessage();
+//
+//        for (Iterator<String> item = allMessage.iterator(); item.hasNext(); ){
+//            Log.d("ACTIVITY LOG ALL MESSAGE", item.next());
+//        }
     }
 
     /*

@@ -1,6 +1,8 @@
 package com.example.myfirstapplication;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.EditText;
+
+import com.example.myfirstapplication.Database.DataTable;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -81,6 +85,14 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra(EXTRA_MESSAGE, message);
 
         Log.d("Send Message", message);
+
+//        //-- Insert into Database
+//        DataTable dataComment = new DataTable(this);
+//        dataComment.createNewComment(message);
+//
+//        SharedPreferences pref = this.getSharedPreferences(this.getString(R.string.pref_file_string),
+//                                                            Context.MODE_PRIVATE);
+//        Log.d("ACTIVITY LOG", pref.getString(this.getString(R.string.pref_file_message_key), "NULL"));
 
         startActivity(intent);
     }
