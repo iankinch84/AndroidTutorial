@@ -31,6 +31,8 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();
         }
+
+        this.onCreatedActivity();
     }
 
 
@@ -95,6 +97,20 @@ public class MainActivity extends ActionBarActivity {
 //        Log.d("ACTIVITY LOG", pref.getString(this.getString(R.string.pref_file_message_key), "NULL"));
 
         startActivity(intent);
+    }
+
+    /**
+     * Ketika Activity Telah selesai dibuat
+     */
+    public void onCreatedActivity(){
+        SharedPreferences pref = this.getSharedPreferences(this.getString(R.string.pref_file_string),
+                                                            Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("TEMP", "true");
+        editor.commit();
+
+        Intent intent = new Intent(this, TestService.class);
+        this.startService(intent);
     }
 
     /*
