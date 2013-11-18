@@ -1,10 +1,12 @@
-package com.example.myfirstapplication;
+package com.example.myfirstapplication.Services;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.os.Handler;
+
+import com.example.myfirstapplication.R;
 
 /**
  * Created by Ian on 11/12/13.
@@ -48,6 +50,7 @@ public class TestService extends IntentService {
             this.timerHandler.removeCallbacks(timerRunnable);
         }
 
+        this.timerHandler.postDelayed(timerRunnable, 5 * 1000);
     }
 
     /*

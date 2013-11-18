@@ -28,7 +28,7 @@
             android:label="@string/title_activity_display_message" >
         </activity>
 
-        <service android:name=".TestService"></service>
+        <service android:name=".Services.TestService"></service>
     </application>
 
 </manifest>
