@@ -1,8 +1,6 @@
 package com.example.myfirstapplication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -75,13 +73,6 @@ public class DisplayActivity extends ActionBarActivity {
         //-- Get Message from Intent Extra
         Intent intent = this.getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-        SharedPreferences pref =
-                this.getSharedPreferences(this.getString(R.string.pref_file_string),
-                                            Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("TEMP", "false");
-        editor.commit();
 
         //-- Create a TextView
         TextView textView = new TextView(this);

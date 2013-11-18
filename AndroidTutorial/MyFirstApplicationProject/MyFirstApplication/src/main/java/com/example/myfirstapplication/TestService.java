@@ -48,7 +48,6 @@ public class TestService extends IntentService {
             this.timerHandler.removeCallbacks(timerRunnable);
         }
 
-        this.timerHandler.postDelayed(timerRunnable, 5* 1000);
     }
 
     /*
