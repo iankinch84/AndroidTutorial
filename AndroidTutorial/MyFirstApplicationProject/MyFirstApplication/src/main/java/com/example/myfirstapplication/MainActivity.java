@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 import com.example.myfirstapplication.Services.TestService;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -167,55 +169,79 @@ public class MainActivity extends ActionBarActivity {
 //                    (int)this.getCRCFromGZippedString(
 //                            this.getCompressedStringByGZip(tempPayload)));
             String compressedString = this.getCompressedStringByGZip(tempPayload);
-            long CRCLong = this.getCRCFromGZippedString(compressedString);
 
-            String tempHash = this.getDESEncryption(String.valueOf(CRCLong), tempKey);
+            byte[] testGzip = this.getCompressedGzip(tempPayload.getBytes("ISO-8859-1"));
+            byte[] testDES = this.getDESEncryption(testGzip, tempKey);
+            byte[] testBase64 = Base64.encode(testDES, Base64.DEFAULT);
 
-            Log.d("ARCADIA LOG", tempHash);
+            Log.d("ARCADIA LOG TEST", new String(testGzip, "ISO-8859-1"));
+            Log.d("ARCADIA LOG TEST", new String(testDES, "ISO-8859-1"));
+            Log.d("ARCADIA LOG TEST", new String(testBase64, "ISO-8859-1"));
 
-            byte[] tempBody = this.getCompressedByteByGzip(tempPayload);
+            byte[] Base64Test = Base64.decode(testBase64, Base64.DEFAULT);
+            byte[] DESTest = this.getDESDecryption(Base64Test, tempKey);
+            byte[] GzipTest = this.getUncompressedGzip(DESTest);
+
+            Log.d("ARCADIA LOG TEST", new String(Base64Test, "ISO-8859-1"));
+            Log.d("ARCADIA LOG TEST", new String(DESTest, "ISO-8859-1"));
+            Log.d("ARCADIA LOG TEST", new String(GzipTest, "ISO-8859-1"));
+
+            long CRC = this.getCRCFromGZippedString(testGzip);
+            byte[] CRC_DES = this.getDESEncryption(this.longToBytes(CRC), tempKey);
 
             MultipartEntity tempEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-
-            ContentBody cb = new InputStreamBody(new ByteArrayInputStream(tempBody), "text-file.txt");
-
-            ByteArrayBody tempArrayBody = new ByteArrayBody(tempBody, "temp");
-
-            String temp3 = Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
-                    Base64.DEFAULT);
-            String temp4 = new String(Base64.decode(temp3, Base64.DEFAULT), "ISO-8859-1");
-            String temp5 = this.getDESDecryption(temp4, tempKey);
-            String temp6 = this.getUncompressedGZippedString(temp5);
-
-            Log.d("TEST BASE64", temp3);
-            Log.d("TEST BASE64", temp4);
-            Log.d("TEST BASE64", temp5);
+            ContentBody cb = new InputStreamBody(new ByteArrayInputStream(testGzip), "text-file.txt");
 
 
-            StringBody temp2 = new StringBody(Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
-                                                            Base64.DEFAULT));
-
-            Log.d("ARCADIA LOG", String.valueOf(temp2.getContentLength()));
-            Log.d("ARCADIA LOG", String.valueOf(Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
-                    Base64.DEFAULT)));
-            Log.d("ARCADIA LOG", String.valueOf(cb.getFilename()));
-
-            tempEntity.addPart("hash", temp2);
-            tempEntity.addPart("gzip", cb);
-
-            HashMap<String, String> tempHashMap = new HashMap<String, String>();
-//            tempHashMap.put("hash", tempHash);
-
-            new Server(this,Server.METHOD_POST, tempEntity, "tracker/trackerPost", new TaskCallback() {
-                @Override
-                public void completed(boolean status, String result) {
-                    if (status && result!=null){
-                        Log.d("ArcadiaTracker", "SUBMITTED: " + result);
-                    } else {
-                        Log.d("ArcadiaTracker", "Submit process ERROR: " + result);
-                    }
-                }
-            }, tempHashMap);
+//            long CRCLong = this.getCRCFromGZippedString(compressedString);
+//
+//            String tempHash = this.getDESEncryption(String.valueOf(CRCLong), tempKey);
+//
+//            Log.d("ARCADIA LOG", tempHash);
+//
+//            byte[] tempBody = this.getCompressedByteByGzip(tempPayload);
+//
+//            MultipartEntity tempEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//
+//            ContentBody cb = new InputStreamBody(new ByteArrayInputStream(tempBody), "text-file.txt");
+//
+//            ByteArrayBody tempArrayBody = new ByteArrayBody(tempBody, "temp");
+//
+//            String temp3 = Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
+//                    Base64.DEFAULT);
+//            String temp4 = new String(Base64.decode(temp3, Base64.DEFAULT), "ISO-8859-1");
+//            String temp5 = this.getDESDecryption(temp4, tempKey);
+//            String temp6 = this.getUncompressedGZippedString(temp5);
+//
+//            Log.d("TEST BASE64", temp3);
+//            Log.d("TEST BASE64", temp4);
+//            Log.d("TEST BASE64", temp5);
+//
+//
+//            StringBody temp2 = new StringBody(Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
+//                                                            Base64.DEFAULT));
+//
+//            Log.d("ARCADIA LOG", String.valueOf(temp2.getContentLength()));
+//            Log.d("ARCADIA LOG", String.valueOf(Base64.encodeToString(tempHash.getBytes("ISO-8859-1"),
+//                    Base64.DEFAULT)));
+//            Log.d("ARCADIA LOG", String.valueOf(cb.getFilename()));
+//
+//            tempEntity.addPart("hash", temp2);
+//            tempEntity.addPart("gzip", cb);
+//
+//            HashMap<String, String> tempHashMap = new HashMap<String, String>();
+////            tempHashMap.put("hash", tempHash);
+//
+//            new Server(this,Server.METHOD_POST, tempEntity, "tracker/trackerPost", new TaskCallback() {
+//                @Override
+//                public void completed(boolean status, String result) {
+//                    if (status && result!=null){
+//                        Log.d("ArcadiaTracker", "SUBMITTED: " + result);
+//                    } else {
+//                        Log.d("ArcadiaTracker", "Submit process ERROR: " + result);
+//                    }
+//                }
+//            }, tempHashMap);
         }
         catch (Exception err){
             err.printStackTrace();
@@ -321,16 +347,37 @@ public class MainActivity extends ActionBarActivity {
         return result;
     }
 
+    private byte[] getUncompressedGzip(byte[] contentBytes){
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try{
+            IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(contentBytes)), out);
+        } catch(IOException e){
+            throw new RuntimeException(e);
+        }
+        return out.toByteArray();
+    }
 
+    private byte[] getCompressedGzip(byte[] content){
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try{
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
+            gzipOutputStream.write(content);
+            gzipOutputStream.close();
+        } catch(IOException e){
+            throw new RuntimeException(e);
+        }
 
-    private long getCRCFromGZippedString(String _GzippedString) {
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private long getCRCFromGZippedString(byte[] _GzippedString) {
         long result = 0;
         ByteArrayInputStream inputStream;
         CheckedInputStream checkedInputStream;
         byte[] tempBuf = new byte[128];
 
         try{
-            inputStream = new ByteArrayInputStream(_GzippedString.getBytes());
+            inputStream = new ByteArrayInputStream(_GzippedString);
             checkedInputStream = new CheckedInputStream(inputStream, new CRC32());
             while (checkedInputStream.read(tempBuf) >= 0) {
                 //-- Nothing To Do
@@ -345,42 +392,42 @@ public class MainActivity extends ActionBarActivity {
         return result;
     }
 
-    private String getDESEncryption(String _PlainText, SecretKey _Key) {
+    private byte[] getDESEncryption(byte[] _PlainText, SecretKey _Key) {
         String temp = "";
         try {
             Cipher desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
             desCipher.init(Cipher.ENCRYPT_MODE, _Key);
 
-            byte[] prePocessedText = _PlainText.getBytes("ISO-8859-1");
+            byte[] prePocessedText = _PlainText;
 
             byte[] cipherText = desCipher.doFinal(prePocessedText);
 
 
-            return new String(cipherText, "ISO-8859-1");
+            return cipherText;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return temp;
+        return null;
     }
 
-    private String getDESDecryption(String _CipherText, SecretKey _Key){
+    private byte[] getDESDecryption(byte[] _CipherText, SecretKey _Key){
         try{
             Cipher desCipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
             desCipher.init(Cipher.DECRYPT_MODE, _Key);
 
-            byte[] prePocessedText = _CipherText.getBytes("ISO-8859-1");
+            byte[] prePocessedText = _CipherText;
 
             byte[] plainText = desCipher.doFinal(prePocessedText);
 
-            return new String(plainText, "ISO-8859-1");
+            return plainText;
         }
         catch (Exception err){
             err.printStackTrace();
         }
 
-        return "";
+        return null;
     }
 
     private SecretKey generateDESSecretKey(String _Key){
@@ -401,6 +448,19 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return null;
+    }
+
+    public byte[] longToBytes(long x) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.putLong(x);
+        return buffer.array();
+    }
+
+    public long bytesToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.put(bytes);
+        buffer.flip();//need flip
+        return buffer.getLong();
     }
 
     /*
