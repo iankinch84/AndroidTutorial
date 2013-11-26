@@ -23,5 +23,6 @@ android {
 }
 
 dependencies {
+    compile files ('libs/httpmime-4.2.5.jar')
 	compile 'com.android.support:appcompat-v7:+'
 }

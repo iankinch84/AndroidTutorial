@@ -12,4 +12,22 @@
     <string name="action_search">Search</string>
     <string name="pref_file_string">com.example.myfirstapplication_PREF</string>
     <string name="pref_file_message_key">MSG</string>
+
+
+    <string name="server_url">http://192.168.88.246:8080/rest/</string>
+    <!--<string name="server_url">http://192.168.88.253:8080/rest/</string>-->
+
+    <string name="location">Current Location:\n
+        Longitude: %1$s\n
+        Latitude: %2$s\n
+        Altitude: %3$s\n
+        Accuracy: %4$s\n
+        Provider: %5$s\n
+        Bearing: %6$s\n
+        Time: %7$s\n
+        Speed: %8$s
+    </string>
+    <string name="location_null">No Location Found</string>
+    <string name="userId_key">pararaton.userId</string>
+    <string name="backend_key">pararaton.backend</string>
 </resources>
